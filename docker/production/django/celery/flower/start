@@ -4,7 +4,7 @@ set -o errexit
 set -o nounset
 
 worker_ready(){
-   celery -A authors_api inspect ping
+   celery -A devsearch inspect ping
 }
 
 until worker_ready; do
@@ -13,7 +13,7 @@ until worker_ready; do
 done
 >&2 echo "Celery workers are available and ready!....:-)"
 
-celery -A authors_api \
+celery -A devsearch \
    --broker="${CELERY_BROKER}" \
    flower \
    --basic_auth="${CELERY_FLOWER_USER}:${CELERY_FLOWER_PASSWORD}"
