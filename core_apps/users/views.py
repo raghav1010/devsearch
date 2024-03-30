@@ -75,7 +75,7 @@ def profiles(request):
 
     custom_range, profiles = paginateProfiles(request, profiles, 3)
     context = {'profiles': profiles, 'search_query': search_query,
-               'custom_range': custom_range}
+               'custom_range': custom_range, 'room_name': "broadcast"}
     return render(request, 'users/profiles.html', context)
 
 
@@ -87,7 +87,7 @@ def userProfile(request, pk):
     otherSkills = profile.skill_set.filter(description="")
 
     context = {'profile': profile, 'topSkills': topSkills,
-               "otherSkills": otherSkills}
+               "otherSkills": otherSkills, 'room_name': "broadcast"}
     return render(request, 'users/user-profile.html', context)
 
 
@@ -99,7 +99,8 @@ def userAccount(request):
     skills = profile.skill_set.all()
     projects = profile.project_set.all()
 
-    context = {'profile': profile, 'skills': skills, 'projects': projects}
+    context = {'profile': profile, 'skills': skills, 'projects': projects,
+               'room_name': "broadcast"}
     return render(request, 'users/account.html', context)
 
 
@@ -116,7 +117,7 @@ def editAccount(request):
 
             return redirect('account')
 
-    context = {'form': form}
+    context = {'form': form, 'room_name': "broadcast"}
     return render(request, 'users/profile_form.html', context)
 
 
@@ -135,7 +136,7 @@ def createSkill(request):
             messages.success(request, 'Skill was added successfully!')
             return redirect('account')
 
-    context = {'form': form}
+    context = {'form': form, 'room_name': "broadcast"}
     return render(request, 'users/skill_form.html', context)
 
 
@@ -153,7 +154,7 @@ def updateSkill(request, pk):
             messages.success(request, 'Skill was updated successfully!')
             return redirect('account')
 
-    context = {'form': form}
+    context = {'form': form, 'room_name': "broadcast"}
     return render(request, 'users/skill_form.html', context)
 
 
@@ -167,7 +168,7 @@ def deleteSkill(request, pk):
         messages.success(request, 'Skill was deleted successfully!')
         return redirect('account')
 
-    context = {'object': skill}
+    context = {'object': skill, 'room_name': "broadcast"}
     return render(request, 'delete_template.html', context)
 
 
@@ -177,7 +178,8 @@ def inbox(request):
     profile = request.user.profile
     messageRequests = profile.messages.all()
     unreadCount = messageRequests.filter(is_read=False).count()
-    context = {'messageRequests': messageRequests, 'unreadCount': unreadCount}
+    context = {'messageRequests': messageRequests, 'unreadCount': unreadCount,
+               'room_name': "broadcast"}
     return render(request, 'users/inbox.html', context)
 
 
@@ -189,7 +191,7 @@ def viewMessage(request, pk):
     if message.is_read == False:
         message.is_read = True
         message.save()
-    context = {'message': message}
+    context = {'message': message, 'room_name': "broadcast"}
     return render(request, 'users/message.html', context)
 
 
@@ -218,5 +220,5 @@ def createMessage(request, pk):
             messages.success(request, 'Your message was successfully sent!')
             return redirect('user-profile', pk=recipient.id)
 
-    context = {'recipient': recipient, 'form': form}
+    context = {'recipient': recipient, 'form': form, 'room_name': "broadcast"}
     return render(request, 'users/message_form.html', context)

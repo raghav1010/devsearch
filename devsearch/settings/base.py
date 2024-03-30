@@ -39,6 +39,8 @@ DJANGD_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
+    "daphne",
+    "channels",
     "rest_framework",
     # "django-filters",
     # "django-countries",
@@ -54,7 +56,7 @@ LOCAL_APPS = [
     'core_apps.notifications',
 ]
 
-INSTALLED_APPS = DJANGD_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+INSTALLED_APPS = THIRD_PARTY_APPS + DJANGD_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -65,6 +67,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 ROOT_URLCONF = 'devsearch.urls'
@@ -186,3 +189,21 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_RESULT_BACKEND_MAX_RETRIES = 10
 CELERY_TASK_SEND_SENT_EVENT = True
+
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [("localhost", "0.0.0.0", "127.0.0.1", 6379)]
+#         }
+#     }
+# }
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}
