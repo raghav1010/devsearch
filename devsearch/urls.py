@@ -4,14 +4,15 @@ from django.contrib import admin
 from django.urls import path, include
 
 from django.contrib.auth import views as auth_views
+from django.conf.urls.static import static
 
-urlpatterns = [
+urlpatterns = ([
     path(settings.ADMIN_URL, admin.site.urls),
     path('', include('core_apps.projects.urls')),
 
     path('', include('core_apps.users.urls')),
 
-    path('', include('core_apps.notifications.urls')),
+    # path('', include('core_apps.notifications.urls')),
 
     path('reset_password/', auth_views.PasswordResetView.as_view(template_name="reset_password.html"),
          name="reset_password"),
@@ -25,4 +26,5 @@ urlpatterns = [
     path('reset_password_complete/',
          auth_views.PasswordResetCompleteView.as_view(template_name="reset_password_complete.html"),
          name="password_reset_complete"),
-]
+               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+               + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))

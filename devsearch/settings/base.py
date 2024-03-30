@@ -39,12 +39,15 @@ DJANGD_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
+    "daphne",
+    "channels",
     "rest_framework",
     # "django-filters",
     # "django-countries",
     # "phonenumber_field",
     "drf_yasg",
     "corsheaders",
+    "djcelery_email",
 ]
 
 LOCAL_APPS = [
@@ -53,7 +56,7 @@ LOCAL_APPS = [
     'core_apps.notifications',
 ]
 
-INSTALLED_APPS = DJANGD_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+INSTALLED_APPS = THIRD_PARTY_APPS + DJANGD_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -64,6 +67,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 ROOT_URLCONF = 'devsearch.urls'
@@ -176,3 +180,30 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ASGI_APPLICATION = "devsearch.asgi.application"
 
 # CORS_URLS_REGEX = r"^/api/.*$"
+
+
+CELERY_BROKER_URL = env("CELERY_BROKER")
+CELERY_RESULT_BACKEND = env("CELERY_BACKEND")
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_RESULT_BACKEND_MAX_RETRIES = 10
+CELERY_TASK_SEND_SENT_EVENT = True
+
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [("localhost", "0.0.0.0", "127.0.0.1", 6379)]
+#         }
+#     }
+# }
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}

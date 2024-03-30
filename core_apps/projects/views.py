@@ -16,7 +16,8 @@ def projects(request):
     custom_range, projects = paginateProjects(request, projects, 6)
 
     context = {'projects': projects,
-               'search_query': search_query, 'custom_range': custom_range}
+               'search_query': search_query, 'custom_range': custom_range,
+               'room_name': "broadcast"}
     return render(request, 'projects/projects.html', context)
 
 
@@ -37,7 +38,8 @@ def project(request, pk):
         messages.success(request, 'Your review was successfully submitted!')
         return redirect('project', pk=projectObj.id)
 
-    return render(request, 'projects/single-project.html', {'project': projectObj, 'form': form})
+    return render(request, 'projects/single-project.html', {'project': projectObj, 'form': form,
+                                                            'room_name': "broadcast"})
 
 
 @login_required(login_url="login")
@@ -59,7 +61,7 @@ def createProject(request):
                 project.tags.add(tag)
             return redirect('account')
 
-    context = {'form': form}
+    context = {'form': form, 'room_name': "broadcast"}
     return render(request, "projects/project_form.html", context)
 
 
@@ -82,7 +84,7 @@ def updateProject(request, pk):
 
             return redirect('account')
 
-    context = {'form': form, 'project': project}
+    context = {'form': form, 'project': project, 'room_name': "broadcast"}
     return render(request, "projects/project_form.html", context)
 
 
@@ -94,5 +96,5 @@ def deleteProject(request, pk):
     if request.method == 'POST':
         project.delete()
         return redirect('projects')
-    context = {'object': project}
+    context = {'object': project, 'room_name': "broadcast"}
     return render(request, 'delete_template.html', context)

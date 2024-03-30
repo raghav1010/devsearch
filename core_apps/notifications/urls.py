@@ -1,6 +1,7 @@
-from django.urls import path
-from . import views
+from django.urls import re_path
 
-urlpatterns = [
-    path('notifications', views.push_notifications, name="push-notifications"),
+from . import consumers
+
+websocket_urlpatterns = [
+    re_path(r"ws/notification/(?P<room_name>\w+)/$", consumers.NotificationConsumer.as_asgi()),
 ]

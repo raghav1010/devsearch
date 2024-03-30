@@ -3,4 +3,4 @@
 set -o errexit
 set -o nounset
 
-watchmedo auto-restart -d authors_api/ -p '*.py' -- celery -A authors_api worker --loglevel=info
+exec watchfiles celery.__main__.main --args '-A devsearch.celery worker -l INFO'

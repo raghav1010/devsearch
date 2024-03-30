@@ -19,7 +19,7 @@ services:
         depends_on:
             - postgres
             - mailhog
-#            - redis
+            - redis
         networks:
             - devsearch-live
 
@@ -43,48 +43,48 @@ services:
         networks:
             - devsearch-live
 
-#    redis:
-#        image: redis:6-alpine
-#        container_name: redis
-#        networks:
-#            - devsearch-live
-#
-#    celery_worker:
-#        build:
-#            context: .
-#            dockerfile: ./docker/local/django/Dockerfile
-#        command: /start-celeryworker
-#        container_name: celery_worker
-#        volumes:
-#            - .:/app
-#        env_file:
-#            - ./.envs/.local/.django
-#            - ./.envs/.local/.postgres
-#        depends_on:
-#            - redis
-#            - postgres
-#            - mailhog
-#        networks:
-#            - devsearch-live
-#
-#    flower:
-#        build:
-#            context: .
-#            dockerfile: ./docker/local/django/Dockerfile
-#        command: /start-flower
-#        container_name: flower
-#        volumes:
-#            - .:/app
-#        env_file:
-#            - ./.envs/.local/.django
-#            - ./.envs/.local/.postgres
-#        ports:
-#            - "5555:5555"
-#        depends_on:
-#            - redis
-#            - postgres
-#        networks:
-#            - devsearch-live
+    redis:
+        image: redis:7-alpine
+        container_name: redis
+        networks:
+            - devsearch-live
+
+    celery_worker:
+        build:
+            context: .
+            dockerfile: ./docker/local/django/Dockerfile
+        command: /start-celeryworker
+        container_name: celery_worker
+        volumes:
+            - .:/app
+        env_file:
+            - ./.envs/.local/.django
+            - ./.envs/.local/.postgres
+        depends_on:
+            - redis
+            - postgres
+            - mailhog
+        networks:
+            - devsearch-live
+
+    flower:
+        build:
+            context: .
+            dockerfile: ./docker/local/django/Dockerfile
+        command: /start-flower
+        container_name: flower
+        volumes:
+            - flower_data:/data
+        env_file:
+            - ./.envs/.local/.django
+            - ./.envs/.local/.postgres
+        ports:
+            - "5555:5555"
+        depends_on:
+            - redis
+            - postgres
+        networks:
+            - devsearch-live
 
 #    nginx:
 #        restart: always
@@ -109,3 +109,4 @@ volumes:
     local_postgres_data: {}
     static_volume:
     media_volume:
+    flower_data: {}
