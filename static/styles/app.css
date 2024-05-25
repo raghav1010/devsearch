@@ -861,3 +861,64 @@ img {
 
   z-index: 99999;
 }
+
+
+.notifier {
+  position: relative;
+  display: inline-block;
+
+}
+
+.bell {
+  font-size: 26px;
+  color: white;
+  transition: 0.3s;
+}
+
+.bell:hover {
+  color: #EF476F;
+}
+
+.badge {
+  position: absolute;
+  top: -5px;
+  left: 18px;
+  padding: 0 5px;
+  font-size: 7px;
+  line-height: 25px;
+  height: 25px;
+  background: #EF476F;
+  color: #FFF;
+  border-radius: 25px;
+  white-space: nowrap;
+}
+
+.notifier.green .badge {
+  background: #06D6A0;
+}
+
+.notifier.green .bell:hover {
+  color: #06D6A0;
+}
+
+.notifier.new .badge {
+  animation: pulse 2s ease-out;
+  animation-iteration-count: infinite;
+}
+
+
+#list-items {
+  display: relative;
+  background-color: white;
+  width: 156.5px;
+}
+/* provide css to list items */
+#list-items a {
+  display: block;
+  font-size: 15px;
+  background-color: rgb(240, 144, 144);
+  color: black;
+  text-decoration: none;
+  padding: 10px;
+  text-align: center;
+}

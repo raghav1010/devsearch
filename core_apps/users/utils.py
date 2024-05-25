@@ -47,3 +47,32 @@ def searchProfiles(request):
     )
 
     return profiles, search_query
+
+
+def paginateNotifications(request, notifications, results):
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(notifications, results)
+
+    try:
+        notifications = paginator.page(page)
+    except PageNotAnInteger:
+        page = 1
+        notifications = paginator.page(page)
+    except EmptyPage:
+        page = paginator.num_pages
+        notifications = paginator.page(page)
+
+    leftIndex = (int(page) - 4)
+
+    if leftIndex < 1:
+        leftIndex = 1
+
+    rightIndex = (int(page) + 5)
+
+    if rightIndex > paginator.num_pages:
+        rightIndex = paginator.num_pages + 1
+
+    custom_range = range(leftIndex, rightIndex)
+
+    return custom_range, notifications

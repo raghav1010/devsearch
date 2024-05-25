@@ -11,6 +11,6 @@ from .tasks import broadcast_notification
 def send_new_message_notification(sender, instance, created, **kwargs):
     print("inside send_new_message_notification signal")
     if created:
-        broadcast_notification.delay(sender_profile_id=instance.sender_profile.id,
-                                     srecipient_profile_id=instance.recipient_profile.id,
+        broadcast_notification.delay(sender_profile_username=instance.sender_profile.username,
+                                     recipient_profile_username=instance.recipient_profile.username,
                                      content=instance.content)

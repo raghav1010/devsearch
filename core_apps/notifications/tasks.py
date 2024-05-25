@@ -8,15 +8,20 @@ import asyncio
 @shared_task(bind=True)
 def broadcast_notification(*args, **kwargs):
     print("broadcast_notification: {}".format(kwargs))
+    to_user = kwargs.get('recipient_profile_username')
     try:
         channel_layer = get_channel_layer()
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop.run_until_complete(channel_layer.group_send(
-            "notification_broadcast",
+            f"notification_{to_user}",
             {
                 'type': 'send_notification',
-                'message': json.dumps(kwargs.get('content')),
+                'message': {
+                    'content': json.dumps(kwargs.get('content')),
+                    'to_user': to_user
+                }
+
             }))
         return 'Done'
 

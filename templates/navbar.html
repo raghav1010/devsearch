@@ -3,7 +3,7 @@
 <!-- Header Section -->
 <header class="header">
     <div class="container container--narrow">
-        <a href="" class="header__logo">
+        <a href="{% url 'projects' %}" class="header__logo">
             <img src="{% static 'images/logo.svg' %} " alt="DevSearch Logo" />
         </a>
 
@@ -14,7 +14,7 @@
                 <div class="toggle-menu__lines"></div>
             </label>
             <ul class="header__menu">
-                <li class="header__menuItem"><a href="">Developers</a></li>
+                <li class="header__menuItem"><a href="{% url 'profiles' %}">Developers</a></li>
                 <li class="header__menuItem"><a href="{% url 'create-project' %}">Projects</a></li>
 
 
@@ -22,8 +22,16 @@
                 {% if request.user.is_authenticated %}
                 <li class="header__menuItem"><a href="{% url 'inbox' %}">Inbox</a></li>
                 <li class="header__menuItem"><a href="{% url 'account' %}">Account</a></li>
-<!--                <li class="header__menuItem" id="notifications-count"><a href="#">0</a></li>-->
-                <li class="header__menuItem" id="notifications-count">0</li>
+                <li class="header__menuItem">
+                    <p>
+                      <div class="notifier new">
+                    <a href="{% url 'notifications' %}">
+                        <i class="bell fa fa-bell-o"></i>
+                        </a>
+                        <div class="badge" id="notifications-count">0</div>
+
+                      </div>
+                </li>
                 <li class="header__menuItem"><a href="{% url 'logout' %}" class="btn btn--sub">Logout</a></li>
                 {% else %}
                 <li class="header__menuItem"><a href="{% url 'login' %}" class="btn btn--sub">Login/Sign Up</a></li>
@@ -45,7 +53,6 @@
         notificationSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
             console.log(data);
-<!--            document.querySelector('#chat-log').value += (data.message + '\n');-->
             console.log(document.getElementById('notifications-count').innerHTML)
             document.getElementById('notifications-count').innerHTML = parseInt(document.getElementById('notifications-count').innerHTML) + 1;
         };
@@ -53,22 +60,6 @@
        notificationSocket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
         };
-
-<!--        document.querySelector('#chat-message-input').focus();-->
-<!--        document.querySelector('#chat-message-input').onkeyup = function(e) {-->
-<!--            if (e.key === 'Enter') {  // enter, return-->
-<!--                document.querySelector('#chat-message-submit').click();-->
-<!--            }-->
-<!--        };-->
-
-<!--        document.querySelector('#chat-message-submit').onclick = function(e) {-->
-<!--            const messageInputDom = document.querySelector('#chat-message-input');-->
-<!--            const message = messageInputDom.value;-->
-<!--            chatSocket.send(JSON.stringify({-->
-<!--                'message': message-->
-<!--            }));-->
-<!--            messageInputDom.value = '';-->
-<!--        };-->
     </script>
     </div>
 </header>
