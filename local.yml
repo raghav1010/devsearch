@@ -89,7 +89,7 @@ services:
     nginx:
         restart: always
         depends_on:
-            - api
+            - django-backend-service
         volumes:
             - static_volume:/app/staticfiles
             - media_volume:/app/mediafiles

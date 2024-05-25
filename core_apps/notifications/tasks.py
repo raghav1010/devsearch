@@ -19,7 +19,8 @@ def broadcast_notification(*args, **kwargs):
                 'type': 'send_notification',
                 'message': {
                     'content': json.dumps(kwargs.get('content')),
-                    'to_user': to_user
+                    'to_user': to_user,
+                    'display_image': kwargs.get('display_image')
                 }
 
             }))
