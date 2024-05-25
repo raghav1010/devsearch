@@ -15,7 +15,7 @@ class InAppMessage(models.Model):
     content = models.CharField(max_length=512)
     id = models.UUIDField(default=uuid.uuid4, unique=True,
                           primary_key=True, editable=False)
-    dt_created = models.DateTimeField(auto_created=True)
+    dt_created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-dt_created']

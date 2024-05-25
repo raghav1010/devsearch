@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 import uuid
 
 from core_apps.users.models import Profile
@@ -51,6 +52,9 @@ class Project(models.Model):
         self.vote_ratio = ratio
 
         self.save()
+
+    def get_absolute_url(self):
+        return reverse('project', args=[str(self.id)])
 
 
 class Review(models.Model):

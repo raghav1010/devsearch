@@ -3,4 +3,4 @@
 set -o errexit
 set -o nounset
 
-exec watchfiles celery.__main__.main --args '-A devsearch.celery worker -l INFO'
+exec watchfiles celery.__main__.main --args '-A devsearch.celery worker -l INFO --queues=broadcast-notification-queue,create-in_app_message-queue'

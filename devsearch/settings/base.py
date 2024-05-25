@@ -190,6 +190,11 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_RESULT_BACKEND_MAX_RETRIES = 10
 CELERY_TASK_SEND_SENT_EVENT = True
 
+CELERY_TASK_ROUTES = {
+    'core_apps.notifications.tasks.broadcast_notification': {'queue': 'broadcast-notification-queue'},
+    'core_apps.projects.tasks.create_in_app_message': {'queue': 'create-in_app_message-queue'},
+}
+
 # CHANNEL_LAYERS = {
 #     'default': {
 #         'BACKEND': 'channels_redis.core.RedisChannelLayer',

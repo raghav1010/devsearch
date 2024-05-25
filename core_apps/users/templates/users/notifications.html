@@ -1,0 +1,37 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<!-- Main Section -->
+<main class="inbox my-xl">
+  <div class="content-box">
+    <h3 class="inbox__title">New Notifications(<span class="new-notification-count" id="new-notification-count">0</span>)</h3>
+
+    <ul class="notifications" id="new-notifications">
+      {% for notification in notifications %}
+      <li class="message">
+          <span class="message__subject">{{notification.content}}</span>
+          <span class="message__date"> on {{notification.dt_created}}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+        {% include 'pagination.html' with queryset=notifications custom_range=custom_range %}
+</main>
+<script>
+          notificationSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            console.log(data.message);
+            document.getElementById('new-notification-count').innerHTML = parseInt(document.getElementById('new-notification-count').innerHTML) + 1;
+            document.getElementById('notifications-count').innerHTML = parseInt(document.getElementById('notifications-count').innerHTML) + 1;
+            const list = document.getElementById("new-notifications");
+            latest_notification = `
+            <li class="message">
+            <span class="message__subject">${data.message.content}</span>
+            </li>
+            `;
+
+            list.innerHTML = latest_notification + list.innerHTML
+        };
+
+</script>
+{% endblock content %}

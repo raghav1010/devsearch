@@ -6,7 +6,8 @@ from django.contrib.auth.models import User
 from django.views.decorators.cache import cache_control
 from .models import Profile
 from .forms import CustomUserCreationForm, ProfileForm, SkillForm, MessageForm
-from .utils import searchProfiles, paginateProfiles
+from .utils import searchProfiles, paginateProfiles, paginateNotifications
+from ..notifications.models import InAppMessage
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -69,38 +70,43 @@ def registerUser(request):
     return render(request, 'users/login_register.html', context)
 
 
+@login_required(login_url='login')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def profiles(request):
+    profile = request.user.profile
     profiles, search_query = searchProfiles(request)
 
     custom_range, profiles = paginateProfiles(request, profiles, 3)
     context = {'profiles': profiles, 'search_query': search_query,
-               'custom_range': custom_range, 'room_name': "broadcast"}
+               'custom_range': custom_range, 'room_name': profile.username}
     return render(request, 'users/profiles.html', context)
 
 
+@login_required(login_url='login')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def userProfile(request, pk):
+    logged_in_profile = request.user.profile
     profile = Profile.objects.get(id=pk)
 
     topSkills = profile.skill_set.exclude(description__exact="")
     otherSkills = profile.skill_set.filter(description="")
 
     context = {'profile': profile, 'topSkills': topSkills,
-               "otherSkills": otherSkills, 'room_name': "broadcast"}
+               "otherSkills": otherSkills, 'room_name': logged_in_profile.username}
     return render(request, 'users/user-profile.html', context)
 
 
 @login_required(login_url='login')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def userAccount(request):
+    logged_in_profile = request.user.profile
     profile = request.user.profile
 
     skills = profile.skill_set.all()
     projects = profile.project_set.all()
 
     context = {'profile': profile, 'skills': skills, 'projects': projects,
-               'room_name': "broadcast"}
+               'room_name': logged_in_profile.username}
     return render(request, 'users/account.html', context)
 
 
@@ -117,7 +123,7 @@ def editAccount(request):
 
             return redirect('account')
 
-    context = {'form': form, 'room_name': "broadcast"}
+    context = {'form': form, 'room_name': profile.username}
     return render(request, 'users/profile_form.html', context)
 
 
@@ -136,7 +142,7 @@ def createSkill(request):
             messages.success(request, 'Skill was added successfully!')
             return redirect('account')
 
-    context = {'form': form, 'room_name': "broadcast"}
+    context = {'form': form, 'room_name': profile.username}
     return render(request, 'users/skill_form.html', context)
 
 
@@ -154,7 +160,7 @@ def updateSkill(request, pk):
             messages.success(request, 'Skill was updated successfully!')
             return redirect('account')
 
-    context = {'form': form, 'room_name': "broadcast"}
+    context = {'form': form, 'room_name': profile.username}
     return render(request, 'users/skill_form.html', context)
 
 
@@ -168,7 +174,7 @@ def deleteSkill(request, pk):
         messages.success(request, 'Skill was deleted successfully!')
         return redirect('account')
 
-    context = {'object': skill, 'room_name': "broadcast"}
+    context = {'object': skill, 'room_name': profile.username}
     return render(request, 'delete_template.html', context)
 
 
@@ -179,7 +185,7 @@ def inbox(request):
     messageRequests = profile.messages.all()
     unreadCount = messageRequests.filter(is_read=False).count()
     context = {'messageRequests': messageRequests, 'unreadCount': unreadCount,
-               'room_name': "broadcast"}
+               'room_name': profile.username}
     return render(request, 'users/inbox.html', context)
 
 
@@ -191,10 +197,11 @@ def viewMessage(request, pk):
     if message.is_read == False:
         message.is_read = True
         message.save()
-    context = {'message': message, 'room_name': "broadcast"}
+    context = {'message': message, 'room_name': profile.username}
     return render(request, 'users/message.html', context)
 
 
+@login_required(login_url='login')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def createMessage(request, pk):
     recipient = Profile.objects.get(id=pk)
@@ -220,5 +227,18 @@ def createMessage(request, pk):
             messages.success(request, 'Your message was successfully sent!')
             return redirect('user-profile', pk=recipient.id)
 
-    context = {'recipient': recipient, 'form': form, 'room_name': "broadcast"}
+    context = {'recipient': recipient, 'form': form, 'room_name': sender.username}
     return render(request, 'users/message_form.html', context)
+
+
+@login_required(login_url='login')
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def notifications(request):
+    profile = request.user.profile
+    notification_records = InAppMessage.objects.filter(recipient_profile=profile)
+    unreadCount = notification_records.count()
+
+    custom_range, notification_records = paginateNotifications(request, notification_records, 6)
+    context = {'notifications': notification_records, 'unreadCount': unreadCount,
+               'room_name': profile.username, 'custom_range': custom_range}
+    return render(request, 'users/notifications.html', context)
