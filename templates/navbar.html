@@ -26,10 +26,12 @@
                     <p>
                       <div class="notifier new">
                     <a href="{% url 'notifications' %}">
-                        <i class="bell fa fa-bell-o"></i>
+                        <i class="bell fa fa-bell-o">
+                        </i>
                         </a>
                         <div class="badge" id="notifications-count">0</div>
-
+                    <div class="bell-content" id="bell-content">
+                    </div>
                       </div>
                 </li>
                 <li class="header__menuItem"><a href="{% url 'logout' %}" class="btn btn--sub">Logout</a></li>
@@ -55,6 +57,19 @@
             console.log(data);
             console.log(document.getElementById('notifications-count').innerHTML)
             document.getElementById('notifications-count').innerHTML = parseInt(document.getElementById('notifications-count').innerHTML) + 1;
+            const currentDate = new Date().toDateString();
+
+            const list = document.getElementById("bell-content");
+            latest_notification = `
+                <a href="#">
+                    <img class="avatar avatar--md" src=${data.message.display_image} alt="image" />
+                    ${data.message.content}
+                    ${currentDate}
+                </a>
+
+
+            `;
+            list.innerHTML = latest_notification + list.innerHTML
         };
 
        notificationSocket.onclose = function(e) {

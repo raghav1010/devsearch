@@ -1,3 +1,5 @@
+import json
+
 from django.db.models.signals import post_save, post_delete
 
 from django.contrib.auth.models import User
@@ -11,6 +13,9 @@ from .tasks import broadcast_notification
 def send_new_message_notification(sender, instance, created, **kwargs):
     print("inside send_new_message_notification signal")
     if created:
+        display_image = json.dumps(instance.sender_profile.imageURL)
+        print("display_image: {}".format(display_image))
         broadcast_notification.delay(sender_profile_username=instance.sender_profile.username,
                                      recipient_profile_username=instance.recipient_profile.username,
-                                     content=instance.content)
+                                     content=instance.content,
+                                     display_image=display_image)

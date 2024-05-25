@@ -76,7 +76,7 @@ def profiles(request):
     profile = request.user.profile
     profiles, search_query = searchProfiles(request)
 
-    custom_range, profiles = paginateProfiles(request, profiles, 3)
+    custom_range, profiles = paginateProfiles(request, profiles, 5)
     context = {'profiles': profiles, 'search_query': search_query,
                'custom_range': custom_range, 'room_name': profile.username}
     return render(request, 'users/profiles.html', context)
